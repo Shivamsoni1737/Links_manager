@@ -1,3 +1,2 @@
-# Coding with Curry - Flutter
-
-This is the repository for the [Coding with Curry](https://www.youtube.com/channel/UCLBhrKXc9CQczo1vBA6w_mA??sub_confirmation=1) Youtube channel.
+# Links - manager
+This app provide the code, needed for app called links manager where one can put and save all the necessary useful links

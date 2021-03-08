@@ -1,14 +1,14 @@
-import 'package:CWCFlutter/model/food.dart';
+import 'package:CWCFlutter/model/link.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class DatabaseProvider {
-  static const String TABLE_FOOD = "food";
+  static const String TABLE_LINK = "link";
   static const String COLUMN_ID = "id";
-  static const String COLUMN_NAME = "name";
-  static const String COLUMN_CALORIES = "calories";
-  static const String COLUMN_VEGAN = "isVegan";
+  static const String COLUMN_TITLE = "title";
+  static const String COLUMN_URL = "url";
+  static const String COLUMN_IMP = "date";
 
   DatabaseProvider._();
   static final DatabaseProvider db = DatabaseProvider._();
@@ -31,64 +31,64 @@ class DatabaseProvider {
     String dbPath = await getDatabasesPath();
 
     return await openDatabase(
-      join(dbPath, 'foodDB.db'),
+      join(dbPath, 'linkDB.db'),
       version: 1,
       onCreate: (Database database, int version) async {
-        print("Creating food table");
+        print("Creating link table");
 
         await database.execute(
-          "CREATE TABLE $TABLE_FOOD ("
+          "CREATE TABLE $TABLE_LINK ("
           "$COLUMN_ID INTEGER PRIMARY KEY,"
-          "$COLUMN_NAME TEXT,"
-          "$COLUMN_CALORIES TEXT,"
-          "$COLUMN_VEGAN INTEGER"
+          "$COLUMN_TITLE TEXT,"
+          "$COLUMN_URL TEXT,"
+          "$COLUMN_IMP INTEGER,"
           ")",
         );
       },
     );
   }
 
-  Future<List<Food>> getFoods() async {
+  Future<List<Link>> getLinks() async {
     final db = await database;
 
-    var foods = await db.query(TABLE_FOOD,
-        columns: [COLUMN_ID, COLUMN_NAME, COLUMN_CALORIES, COLUMN_VEGAN]);
+    var links = await db.query(TABLE_LINK,
+        columns: [COLUMN_ID, COLUMN_TITLE, COLUMN_URL, COLUMN_IMP]);
 
-    List<Food> foodList = List<Food>();
+    List<Link> linkList = List<Link>();
 
-    foods.forEach((currentFood) {
-      Food food = Food.fromMap(currentFood);
+    links.forEach((currentLink) {
+      Link link = Link.fromMap(currentLink);
 
-      foodList.add(food);
+      linkList.add(link);
     });
 
-    return foodList;
+    return linkList;
   }
 
-  Future<Food> insert(Food food) async {
+  Future<Link> insert(Link link) async {
     final db = await database;
-    food.id = await db.insert(TABLE_FOOD, food.toMap());
-    return food;
+    link.id = await db.insert(TABLE_LINK, link.toMap());
+    return link;
   }
 
   Future<int> delete(int id) async {
     final db = await database;
 
     return await db.delete(
-      TABLE_FOOD,
+      TABLE_LINK,
       where: "id = ?",
       whereArgs: [id],
     );
   }
 
-  Future<int> update(Food food) async {
+  Future<int> update(Link link) async {
     final db = await database;
 
     return await db.update(
-      TABLE_FOOD,
-      food.toMap(),
+      TABLE_LINK,
+      link.toMap(),
       where: "id = ?",
-      whereArgs: [food.id],
+      whereArgs: [link.id],
     );
   }
 }

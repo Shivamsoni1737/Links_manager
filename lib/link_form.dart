@@ -1,24 +1,24 @@
-import 'package:CWCFlutter/bloc/food_bloc.dart';
+import 'package:CWCFlutter/bloc/link_bloc.dart';
 import 'package:CWCFlutter/db/database_provider.dart';
-import 'package:CWCFlutter/events/add_food.dart';
-import 'package:CWCFlutter/events/update_food.dart';
-import 'package:CWCFlutter/model/food.dart';
+import 'package:CWCFlutter/events/add_link.dart';
+import 'package:CWCFlutter/events/update_link.dart';
+import 'package:CWCFlutter/model/link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FoodForm extends StatefulWidget {
-  final Food food;
-  final int foodIndex;
+class LinkForm extends StatefulWidget {
+  final Link link;
+  final int linkIndex;
 
-  FoodForm({this.food, this.foodIndex});
+  LinkForm({this.link, this.linkIndex});
 
   @override
   State<StatefulWidget> createState() {
-    return FoodFormState();
+    return LinkFormState();
   }
 }
 
-class FoodFormState extends State<FoodForm> {
+class LinkFormState extends State<LinkForm> {
   String title;
   String url;
   bool date = false;
@@ -44,17 +44,17 @@ class FoodFormState extends State<FoodForm> {
     );
   }
 
-  Widget _buildCalories() {
+  Widget buildUrl() {
     return TextFormField(
       initialValue: url,
-      decoration: InputDecoration(labelText: 'Calories'),
+      decoration: InputDecoration(labelText: 'URL'),
       keyboardType: TextInputType.number,
       style: TextStyle(fontSize: 28),
       validator: (String value) {
-        int calories = int.tryParse(value);
+        int url = int.tryParse(value);
 
-        if (calories == null || calories <= 0) {
-          return 'Calories must be greater than 0';
+        if (url == null || url <= 0) {
+          return 'Url must be greater than 0';
         }
 
         return null;
@@ -65,9 +65,9 @@ class FoodFormState extends State<FoodForm> {
     );
   }
 
-  Widget _buildIsVegan() {
+  Widget buildImp() {
     return SwitchListTile(
-      title: Text("Vegan?", style: TextStyle(fontSize: 20)),
+      title: Text("Is Important?", style: TextStyle(fontSize: 20)),
       value: date,
       onChanged: (bool newValue) => setState(() {
         date = newValue;
@@ -78,10 +78,10 @@ class FoodFormState extends State<FoodForm> {
   @override
   void initState() {
     super.initState();
-    if (widget.food != null) {
-      title = widget.food.name;
-      url = widget.food.calories;
-      date = widget.food.isVegan;
+    if (widget.link != null) {
+      title = widget.link.title;
+      url = widget.link.url;
+      date = widget.link.isImp;
     }
   }
 
@@ -101,11 +101,11 @@ class FoodFormState extends State<FoodForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   buildTitle(),
-                  _buildCalories(),
+                  buildUrl(),
                   SizedBox(height: 16),
-                  _buildIsVegan(),
+                  buildImp(),
                   SizedBox(height: 20),
-                  widget.food == null
+                  widget.link == null
                       ? RaisedButton(
                           child: Text(
                             'Submit',
@@ -118,16 +118,16 @@ class FoodFormState extends State<FoodForm> {
 
                             _formKey.currentState.save();
 
-                            Food food = Food(
-                              name: title,
-                              calories: url,
-                              isVegan: date,
+                            Link link = Link(
+                              title: title,
+                              url: url,
+                              isImp: date,
                             );
 
-                            DatabaseProvider.db.insert(food).then(
-                                  (storedFood) =>
-                                      BlocProvider.of<FoodBloc>(context).add(
-                                    AddFood(storedFood),
+                            DatabaseProvider.db.insert(link).then(
+                                  (storedLink) =>
+                                      BlocProvider.of<LinkBloc>(context).add(
+                                    AddLink(storedLink),
                                   ),
                                 );
 
@@ -151,17 +151,17 @@ class FoodFormState extends State<FoodForm> {
 
                                 _formKey.currentState.save();
 
-                                Food food = Food(
-                                  name: title,
-                                  calories: url,
-                                  isVegan: date,
+                                Link link = Link(
+                                  title: title,
+                                  url: url,
+                                  isImp: date,
                                 );
 
-                                DatabaseProvider.db.update(widget.food).then(
-                                      (storedFood) =>
-                                          BlocProvider.of<FoodBloc>(context)
+                                DatabaseProvider.db.update(widget.link).then(
+                                      (storedLink) =>
+                                          BlocProvider.of<LinkBloc>(context)
                                               .add(
-                                        UpdateFood(widget.foodIndex, food),
+                                        UpdateLink(widget.linkIndex, link),
                                       ),
                                     );
 

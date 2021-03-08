@@ -41,7 +41,7 @@ class DatabaseProvider {
           "$COLUMN_ID INTEGER PRIMARY KEY,"
           "$COLUMN_TITLE TEXT,"
           "$COLUMN_URL TEXT,"
-          "$COLUMN_IMP INTEGER,"
+          "$COLUMN_IMP INTEGER"
           ")",
         );
       },
